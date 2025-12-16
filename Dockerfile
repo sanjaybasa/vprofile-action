@@ -13,3 +13,14 @@ EXPOSE 8080
 CMD ["catalina.sh", "run"]
 WORKDIR /usr/local/tomcat/
 VOLUME /usr/local/tomcat/webapps
+FROM mysql:5.7.25
+ENV MYSQL_ROOT_PASSWORD="vprodbpass"
+MYSQL_DATABASE="accounts"
+
+ADD db_backup.sql docker-entrypoint-init.d/db_backup.sql
+
+FROM nginx
+LABEL "project=vprofile"
+RUN rm -rf /etc/nginx/conf.d/default.conf
+COPY nginvproapp.conf /etc/nginx/conf.d/vproapp.conf
+
